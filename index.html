@@ -60,7 +60,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-o
 
 /* projection mode */
 body.big .wrap{max-width:none;height:100%;padding-block:16px}
-body.big .scene{max-width:min(calc((100vh - 190px) * .75),92vw)}
+body.big .scene{max-width:min(calc((100vh - 210px) * .75),92vw)}
 body.big .nick{font-size:clamp(32px,5.5vh,64px)}
 body.big .back .nick{font-size:clamp(20px,3vh,32px)}
 body.big .name{font-size:min(clamp(80px,16vh,190px),24cqi)}
@@ -69,7 +69,7 @@ body.big .hint{font-size:18px}
 @media (prefers-reduced-motion:reduce){.card{transition:none}.bar i{transition:none}}
 </style>
 </head>
-<body>
+<body class="big">
 <div class="wrap">
   <header>
     <div class="brand"><small>11/19 相調</small><b>猜猜我是誰</b></div>
@@ -86,7 +86,6 @@ body.big .hint{font-size:18px}
     <div class="controls">
       <button class="btn primary" id="next">下一位</button>
       <button class="btn" id="restart">重新洗牌</button>
-      <button class="btn" id="bigBtn">投影模式</button>
     </div>
   </section>
 </div>
@@ -121,13 +120,6 @@ $("#scene").onclick=tapCard;
 $("#scene").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();tapCard()}};
 $("#next").onclick=()=>{setFlip(false);setTimeout(()=>{pos++;renderPlay()},flipped?0:250)};
 $("#restart").onclick=()=>{setFlip(false);setTimeout(newRound,250)};
-$("#bigBtn").onclick=async()=>{
-  const on=!document.body.classList.contains("big");
-  document.body.classList.toggle("big",on);$("#bigBtn").textContent=on?"離開投影":"投影模式";
-  try{on?await document.documentElement.requestFullscreen?.():document.fullscreenElement&&await document.exitFullscreen()}catch(e){}
-  
-};
-document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&document.body.classList.contains("big")){document.body.classList.remove("big");$("#bigBtn").textContent="投影模式"}});
 document.addEventListener("keydown",e=>{if($("#play").hidden||e.target.tagName==="INPUT")return;if(e.key==="ArrowRight")$("#next").click()});
 
 

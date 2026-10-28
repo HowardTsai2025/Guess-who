@@ -11,7 +11,7 @@
 - **新增 / 修改 / 刪除人**：只改 `people.json`。保持 UTF-8、2 格縮排、合法 JSON（改完用 `python3 -m json.tool people.json` 檢查）。
 - **改外觀**：改 `index.html` 的 `<style>`。顏色都在 `:root` 的 CSS 變數；深色模式在 `@media (prefers-color-scheme: dark)` 區塊。
 - 名字（`.name`）必須一行顯示：保留 `white-space:nowrap` 與 `24cqi` 自動縮放。
-- 投影模式（`body.big`）卡片高度要能和按鈕一起放進一個畫面。
+- 一律使用投影模式版面（`<body class="big">`，沒有切換按鈕）：卡片高度要能和按鈕一起放進一個畫面。
 
 ## 改完之後
 1. 本機用 `python3 -m http.server` 開起來看一下（直接雙擊 index.html 會讀不到 people.json，這是正常的）。
