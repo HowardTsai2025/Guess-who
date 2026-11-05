@@ -75,6 +75,40 @@ body.big .nick{font-size:clamp(32px,5.5vh,64px)}
 body.big .back .nick{font-size:clamp(20px,3vh,32px)}
 body.big .name{font-size:min(clamp(80px,16vh,190px),24cqi)}
 body.big .hint{font-size:18px}
+/* 橫放（iPad 橫屏、電腦螢幕）：卡片自動變成橫式，空間更大 */
+@media (orientation:landscape){
+  body.big .scene{aspect-ratio:3/2;max-width:min(calc((100vh - 220px) * 1.5),92vw);max-width:min(calc((100svh - 220px) * 1.5),92vw)}
+  body.big .face{gap:18px}
+  body.big .name{font-size:min(clamp(80px,18vh,200px),24cqi)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  body.big .wrap{gap:10px;padding-block:8px}
+  body.big #play{gap:12px}
+  body.big .scene{max-width:min(calc((100svh - 180px) * 1.5),92vw)}
+  body.big .front::before{top:18px}
+  body.big .hint{bottom:14px;font-size:14px}
+}
+/* 字體盡量放大：跟著卡片大小縮放，坐遠也看得清楚 */
+body.big .front .nick{font-size:clamp(26px,11cqi,120px);line-height:1.35}
+body.big .name{font-size:calc((100cqi - 72px) / 3.25)}
+body.big .hint{font-size:clamp(16px,3.6cqi,26px)}
+body.big .btn{font-size:20px;padding:14px 28px}
+body.big .progress{font-size:18px}
+#bNick{display:none}
+
+.front .nick.keep{word-break:keep-all;overflow-wrap:normal}
+
+/* 進度移到標題列，卡片可以更大；按鈕和下緣留白 */
+header{flex-wrap:nowrap}
+header .progress{flex:1;justify-content:center;min-width:0}
+header .bar{width:clamp(40px,12vw,140px)}
+body.big .wrap{padding-bottom:32px}
+body.big .scene{max-width:min(calc((100vh - 198px) * .75),92vw);max-width:min(calc((100svh - 198px) * .75),92vw)}
+@media (orientation:landscape){body.big .scene{max-width:min(calc((100vh - 198px) * 1.5),92vw);max-width:min(calc((100svh - 198px) * 1.5),92vw)}}
+@media (orientation:landscape) and (max-height:520px){body.big .wrap{padding-bottom:14px}body.big .scene{max-width:min(calc((100svh - 154px) * 1.5),92vw)}}
+@media (max-width:420px){header .progress{font-size:14px;gap:8px}}
+
+
 
 @media (prefers-reduced-motion:reduce){.card{transition:none}.bar i{transition:none}}
 </style>
@@ -83,6 +117,7 @@ body.big .hint{font-size:18px}
 <div class="wrap">
   <header>
     <div class="brand"><small>11/19 相調</small><b>猜猜我是誰</b></div>
+    <div class="progress"><span id="count">載入中…</span><div class="bar"><i id="barfill"></i></div></div>
     <button class="theme-btn" id="themeBtn" aria-label="切換深色／淺色">
       <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -90,7 +125,6 @@ body.big .hint{font-size:18px}
   </header>
 
   <section id="play">
-    <div class="progress"><span id="count">載入中…</span><div class="bar"><i id="barfill"></i></div></div>
     <div class="scene" id="scene" role="button" tabindex="0" aria-label="點一下翻牌">
       <div class="card" id="card">
         <div class="face front"><div class="nick" id="fNick">題庫載入中…</div><div class="hint" id="fHint">點一下揭曉</div></div>
@@ -131,9 +165,23 @@ function renderPlay(){
   $("#fHint").hidden=false;
   if(!p){$("#fNick").innerHTML='<span class="done">這一輪猜完了！</span>';$("#fHint").textContent="按「重新洗牌」再玩一輪";$("#next").disabled=true;$("#bNick").textContent="";$("#bName").textContent="";return}
   $("#next").disabled=false;$("#fHint").textContent="點一下揭曉";
-  $("#fNick").textContent=p.nick;$("#bNick").textContent=p.nick;
+  setNick(p.nick);$("#bNick").textContent=p.nick;
   setTimeout(()=>{$("#bName").textContent=full(p)},flipped?0:350);
 }
+
+/* ---------- 正面描述：自動找出放得下的最大字級（優先在「的」後面換行）---------- */
+function setNick(t){const n=$("#fNick");const s=String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  n.classList.toggle("keep",t.includes("的"));n.innerHTML=s.replace(/的/g,"的<wbr>")}
+function fitNick(){
+  const n=$("#fNick"),f=n.parentElement;if(!f||!f.clientHeight)return;
+  const W=f.clientWidth-64,H=f.clientHeight-(f.clientHeight<320?76:170);
+  n.style.width=W+"px";let lo=18,hi=240;
+  for(let i=0;i<12;i++){const m=(lo+hi)/2;n.style.fontSize=m+"px";(n.scrollWidth<=W+1&&n.scrollHeight<=H)?lo=m:hi=m}
+  n.style.fontSize=Math.floor(lo)+"px";
+}
+let fitT;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fitNick,80)});
+document.fonts&&document.fonts.ready.then(()=>fitNick());
+const _renderPlay=renderPlay;renderPlay=function(){$("#fNick").classList.remove("keep");_renderPlay();requestAnimationFrame(fitNick)};
 function setFlip(v){flipped=v;$("#card").classList.toggle("flipped",v)}
 function tapCard(){if(pos<deck.length&&current())setFlip(!flipped)}
 $("#scene").onclick=tapCard;

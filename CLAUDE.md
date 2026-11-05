@@ -12,6 +12,11 @@
 - **改外觀**：改 `index.html` 的 `<style>`。顏色都在 `:root` 的 CSS 變數；深色模式在 `@media (prefers-color-scheme: dark)` 區塊。
 - 右上角圓形按鈕（`#themeBtn`）切換深淺色：預設跟著裝置，按過後用 `localStorage` 記住該裝置的選擇（寫在 `<html data-theme>`）。淺色時顯示月亮圖示、深色時顯示太陽圖示。
 - 名字（`.name`）必須一行顯示：保留 `white-space:nowrap` 與 `24cqi` 自動縮放。
+- 橫放（`orientation:landscape`）時卡片改成 3:2 橫式，直放維持 3:4 直式；矮螢幕（高度 ≤520px）另有縮小版面。
+- 卡片正面的描述由 `fitNick()` 自動找出放得下的最大字級，並優先在「的」後面換行（`setNick()` 會在「的」後面插入 `<wbr>`）。
+- 卡片背面只顯示名字（`#bNick` 隱藏），名字字級跟著卡片寬度放大。
+- 「第幾 / 總數 位」的進度放在標題列中間；按鈕下方要留白（`body.big .wrap` 的 padding-bottom），卡片尺寸用 `100svh - 198px` 計算。
+- 預覽各種裝置（iPad／手機、直放／橫放）時，可以用 Playwright 把視窗設成 820×1106、1180×746、390×664、844×340 檢查。
 - 一律使用投影模式版面（`<body class="big">`，沒有切換按鈕）：卡片高度要能和按鈕一起放進一個畫面。
 
 ## 改完之後
