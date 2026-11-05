@@ -66,6 +66,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-o
 .btn.primary{background:var(--gold);border-color:var(--gold);color:var(--paper)}
 .btn:disabled{opacity:.4;cursor:default}
 .done{font-family:var(--serif);font-size:24px}
+/* 一輪結束：經文卡，出處放右下角小字 */
+.verse{display:block;white-space:nowrap;text-align:center}
+.ref{position:absolute;right:32px;bottom:28px;color:var(--muted);font-size:14px;letter-spacing:.08em}
+body.big .ref{font-size:clamp(14px,3cqi,22px)}
 .status{color:var(--muted);font-size:14px;text-align:center}
 
 /* projection mode */
@@ -127,7 +131,7 @@ body.big .scene{max-width:min(calc((100vh - 198px) * .75),92vw);max-width:min(ca
   <section id="play">
     <div class="scene" id="scene" role="button" tabindex="0" aria-label="點一下翻牌">
       <div class="card" id="card">
-        <div class="face front"><div class="nick" id="fNick">題庫載入中…</div><div class="hint" id="fHint">點一下揭曉</div></div>
+        <div class="face front"><div class="nick" id="fNick">題庫載入中…</div><div class="hint" id="fHint">點一下揭曉</div><div class="ref" id="fRef" hidden>約翰福音 10:3</div></div>
         <div class="face back"><div class="nick" id="bNick"></div><div class="name" id="bName"></div></div>
       </div>
     </div>
@@ -162,8 +166,8 @@ function renderPlay(){
   $("#count").textContent=total?`第 ${Math.min(pos+1,deck.length)} / ${deck.length} 位`:"題庫是空的";
   $("#barfill").style.width=deck.length?(Math.min(pos+1,deck.length)/deck.length*100)+"%":"0";
   if(!people.length){$("#fNick").textContent="題庫是空的，請在 people.json 新增";$("#fHint").hidden=true;$("#next").disabled=true;return}
-  $("#fHint").hidden=false;
-  if(!p){$("#fNick").innerHTML='<span class="done">這一輪猜完了！</span>';$("#fHint").textContent="按「重新洗牌」再玩一輪";$("#next").disabled=true;$("#bNick").textContent="";$("#bName").textContent="";return}
+  $("#fHint").hidden=false;$("#fRef").hidden=true;
+  if(!p){$("#fNick").classList.add("keep");$("#fNick").innerHTML="<span class=\"verse\">⋯他按著名</span><span class=\"verse\">叫自己的羊</span><span class=\"verse\">領牠們出來</span>";$("#fHint").hidden=true;$("#fRef").hidden=false;$("#next").disabled=true;$("#bNick").textContent="";$("#bName").textContent="";return}
   $("#next").disabled=false;$("#fHint").textContent="點一下揭曉";
   setNick(p.nick);$("#bNick").textContent=p.nick;
   setTimeout(()=>{$("#bName").textContent=full(p)},flipped?0:350);
@@ -174,7 +178,7 @@ function setNick(t){const n=$("#fNick");const s=String(t).replace(/[&<>"]/g,c=>(
   n.classList.toggle("keep",t.includes("的"));n.innerHTML=s.replace(/的/g,"的<wbr>")}
 function fitNick(){
   const n=$("#fNick"),f=n.parentElement;if(!f||!f.clientHeight)return;
-  const W=f.clientWidth-64,H=f.clientHeight-(f.clientHeight<320?76:170);
+  const W=f.clientWidth-64,H=f.clientHeight-(f.clientHeight<320?(n.querySelector(".verse")?130:76):170);
   n.style.width=W+"px";let lo=18,hi=240;
   for(let i=0;i<12;i++){const m=(lo+hi)/2;n.style.fontSize=m+"px";(n.scrollWidth<=W+1&&n.scrollHeight<=H)?lo=m:hi=m}
   n.style.fontSize=Math.floor(lo)+"px";
