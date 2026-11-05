@@ -109,7 +109,7 @@ header .bar{width:clamp(40px,12vw,140px)}
 body.big .wrap{padding-bottom:32px}
 body.big .scene{max-width:min(calc((100vh - 198px) * .75),92vw);max-width:min(calc((100svh - 198px) * .75),92vw)}
 @media (orientation:landscape){body.big .scene{max-width:min(calc((100vh - 198px) * 1.5),92vw);max-width:min(calc((100svh - 198px) * 1.5),92vw)}}
-@media (orientation:landscape) and (max-height:520px){body.big .wrap{padding-bottom:14px}body.big .scene{max-width:min(calc((100svh - 154px) * 1.5),92vw)}}
+@media (orientation:landscape) and (max-height:520px){body.big .ref{right:18px;bottom:12px;font-size:12px}body.big .wrap{padding-bottom:14px}body.big .scene{max-width:min(calc((100svh - 154px) * 1.5),92vw)}}
 @media (max-width:420px){header .progress{font-size:14px;gap:8px}}
 
 
@@ -178,8 +178,10 @@ function setNick(t){const n=$("#fNick");const s=String(t).replace(/[&<>"]/g,c=>(
   n.classList.toggle("keep",t.includes("的"));n.innerHTML=s.replace(/的/g,"的<wbr>")}
 function fitNick(){
   const n=$("#fNick"),f=n.parentElement;if(!f||!f.clientHeight)return;
-  const W=f.clientWidth-64,H=f.clientHeight-(f.clientHeight<320?(n.querySelector(".verse")?130:76):170);
-  n.style.width=W+"px";let lo=18,hi=240;
+  const W=f.clientWidth-64,verse=n.querySelector(".verse");let H=f.clientHeight-(f.clientHeight<320?76:170),lo=18,hi=240;
+  /* 經文卡：上下都留出右下角出處的高度，經文才不會壓到出處 */
+  if(verse){const band=f.clientHeight-$("#fRef").offsetTop+6;H=Math.min(H,f.clientHeight-2*band);lo=8}
+  n.style.width=W+"px";
   for(let i=0;i<12;i++){const m=(lo+hi)/2;n.style.fontSize=m+"px";(n.scrollWidth<=W+1&&n.scrollHeight<=H)?lo=m:hi=m}
   n.style.fontSize=Math.floor(lo)+"px";
 }
