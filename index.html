@@ -2,7 +2,7 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>按名呼叫</title>
 <meta name="description" content="按名呼叫：看描述，猜猜是誰">
 <meta name="theme-color" content="#f6f2ea">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap">
-<style>html{-webkit-text-size-adjust:100%}body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}
+<style>html{-webkit-text-size-adjust:100%;touch-action:pan-x pan-y}button,.scene{touch-action:manipulation}body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}
 
 /* 版面：置中的翻牌卡片＋下方按鈕 */
 :root{
@@ -147,6 +147,11 @@ body.big .scene{max-width:min(calc((100vh - 198px) * .75),92vw);max-width:min(ca
 
 <script>
 const $=s=>document.querySelector(s);
+/* ---------- 鎖定縮放：不能點兩下放大，也不能兩指放大（iPhone／iPad Safari 會忽略 viewport 設定，所以另外擋手勢）---------- */
+["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
+let lastTouchEnd=0;document.addEventListener("touchend",e=>{const now=Date.now();if(now-lastTouchEnd<=350){e.preventDefault();e.target.closest("button,.scene")?.click()}lastTouchEnd=now},{passive:false});
 /* ---------- 深淺色切換（預設跟著裝置，按過會記住）---------- */
 const darkMQ=matchMedia("(prefers-color-scheme: dark)");
 const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==="dark":darkMQ.matches};
