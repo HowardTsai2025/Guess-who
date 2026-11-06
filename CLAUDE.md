@@ -23,6 +23,12 @@
 - 畫面縮放完全鎖定（不能點兩下放大、也不能兩指放大）：viewport 加 `maximum-scale=1,user-scalable=no`，CSS `touch-action`，另外在 JS 擋 Safari 的 `gesture*` 事件與快速連點；連點時會手動補觸發 click，確保快速連按「下一位」不會漏掉。
 - 一律使用投影模式版面（`<body class="big">`，沒有切換按鈕）：卡片高度要能和按鈕一起放進一個畫面。
 
+## 分享縮圖（重要）
+- 在台灣分享網址幾乎都用 LINE，要顧到「收到連結的人看到的縮圖」。
+- 一定要有 `og:image`：1200×630 的滿版橫圖（`og-image.png`），用完整網址（https://…），並附 `og:image:width`／`og:image:height`、`og:title`、`og:description`。沒有 `og:image` 時 LINE 會拿方形的主畫面圖示來用，兩側會留白、不滿版。
+- 重要內容放在圖的正中間（約中間 630×630 範圍），因為有些 App 會把縮圖裁成方形。
+- 換縮圖後 LINE 會沿用舊快取，測試時在網址後面加 `?v=2` 之類的參數再分享。
+
 ## 改完之後
 1. 本機用 `python3 -m http.server` 開起來看一下（直接雙擊 index.html 會讀不到 people.json，這是正常的）。
 2. `git add`、`git commit`（中文訊息，簡述改了什麼）、`git push`。
