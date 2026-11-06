@@ -10,6 +10,8 @@
 ## 常見需求的做法
 - **新增 / 修改 / 刪除人**：只改 `people.json`。保持 UTF-8、2 格縮排、合法 JSON（改完用 `python3 -m json.tool people.json` 檢查）。
 - **改外觀**：改 `index.html` 的 `<style>`。顏色都在 `:root` 的 CSS 變數；深色模式在 `@media (prefers-color-scheme: dark)` 區塊。
+- 網站標題是「按名呼叫」（`.brand b`，金色 `var(--gold)`，與「下一位」按鈕同色），左上角不再顯示日期小字。
+- 主畫面圖示（加入主畫面時用，畫面中不顯示）：`apple-touch-icon.png`（180×180）與 `icon-192.png`，金底小羊圖案。
 - 右上角圓形按鈕（`#themeBtn`）切換深淺色：預設跟著裝置，按過後用 `localStorage` 記住該裝置的選擇（寫在 `<html data-theme>`）。淺色時顯示月亮圖示、深色時顯示太陽圖示。
 - 名字（`.name`）必須一行顯示：保留 `white-space:nowrap` 與 `24cqi` 自動縮放。
 - 橫放（`orientation:landscape`）時卡片改成 3:2 橫式，直放維持 3:4 直式；矮螢幕（高度 ≤520px）另有縮小版面。
